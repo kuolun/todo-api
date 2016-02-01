@@ -1,23 +1,17 @@
 var express = require('express');
+var bodyParser = require('body-parser');
+
 var app = express();
+var todos = [];
+var todoNextId = 1;
+
+app.use(bodyParser.json());
+
 
 //heroku
 //如果沒有heroku的PORT就先設定為3000
 var PORT = process.env.PORT || 3000;
 
-var todos = [{
-    id: 1,
-    description: 'Meet mom for lunch',
-    completed: false
-}, {
-    id: 2,
-    description: 'Go to market',
-    completed: false
-}, {
-    id: 3,
-    description: 'watch TV',
-    completed: true
-}];
 
 
 app.get('/', function (req, res) {
@@ -47,6 +41,20 @@ app.get('/todos/:id', function (req, res) {
     } else {
         res.status(404).send();
     }
+});
+
+//POST /todos
+app.post('/todos', function (req, res) {
+    var body = req.body;
+
+    //add id field
+    body.id = todoNextId++;
+
+    //push body into array
+    todos.push(body);
+
+
+    res.json(body);
 });
 
 
